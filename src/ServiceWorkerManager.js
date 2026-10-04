@@ -20,7 +20,7 @@ export class ServiceWorkerManager {
   async register() {
     if (!("serviceWorker" in navigator)) {
       console.warn(
-        `[Spriteforge] Service Workers not supported in this browser`,
+        `[AniForge] Service Workers not supported in this browser`,
       );
       return null;
     }
@@ -28,13 +28,13 @@ export class ServiceWorkerManager {
     const existingRegistration =
       await navigator.serviceWorker.getRegistration();
     if (existingRegistration) {
-      console.log(`[Spriteforge] Service Worker already registered`);
+      console.log(`[AniForge] Service Worker already registered`);
       this.#registration = existingRegistration;
       this.#isRegistered = true;
 
       this.#checkForMultipleWorkers().catch((error) => {
         console.warn(
-          `[Spriteforge] Error checking for multiple workers:`,
+          `[AniForge] Error checking for multiple workers:`,
           error,
         );
       });
@@ -47,7 +47,7 @@ export class ServiceWorkerManager {
 
     if (this.#isRegistered) {
       console.log(
-        `[Spriteforge] Service Worker already registered in this instance`,
+        `[AniForge] Service Worker already registered in this instance`,
       );
       return this.#registration;
     }
@@ -63,7 +63,7 @@ export class ServiceWorkerManager {
       this.#isRegistered = true;
 
       console.log(
-        `[Spriteforge] Service Worker registered successfully:`,
+        `[AniForge] Service Worker registered successfully:`,
         this.#registration.scope,
       );
 
@@ -71,7 +71,7 @@ export class ServiceWorkerManager {
 
       return this.#registration;
     } catch (error) {
-      console.error(`[Spriteforge] Service Worker registration failed:`, error);
+      console.error(`[AniForge] Service Worker registration failed:`, error);
       return null;
     }
   }
@@ -89,7 +89,7 @@ export class ServiceWorkerManager {
       (active && installing) ||
       (waiting && installing)
     ) {
-      console.warn(`[Spriteforge] Multiple service workers detected:`, {
+      console.warn(`[AniForge] Multiple service workers detected:`, {
         active: active
           ? `${active.state} (script: ${active.scriptURL})`
           : "none",
@@ -115,14 +115,14 @@ export class ServiceWorkerManager {
           const waitingVersion = await this.getLatestVersion();
           if (activeVersion === waitingVersion) {
             console.log(
-              `[Spriteforge] Waiting worker is same version as active. Auto-activating...`,
+              `[AniForge] Waiting worker is same version as active. Auto-activating...`,
             );
             await this.skipWaiting(waiting);
             return;
           }
         } catch (error) {
           console.warn(
-            `[Spriteforge] Could not verify versions, proceeding normally:`,
+            `[AniForge] Could not verify versions, proceeding normally:`,
             error,
           );
         }
@@ -146,16 +146,16 @@ export class ServiceWorkerManager {
           const latestVersion = await this.getLatestVersion();
           if (currentVersion === latestVersion) {
             console.log(
-              `[Spriteforge] Waiting worker is same version, skipping notification`,
+              `[AniForge] Waiting worker is same version, skipping notification`,
             );
             return;
           }
         } catch (error) {
-          console.warn(`[Spriteforge] Could not verify versions:`, error);
+          console.warn(`[AniForge] Could not verify versions:`, error);
         }
 
         console.log(
-          `[Spriteforge] Found waiting service worker from previous session`,
+          `[AniForge] Found waiting service worker from previous session`,
         );
         this.#dispatchUpdateEvent(waitingWorker);
       }
@@ -165,11 +165,11 @@ export class ServiceWorkerManager {
       const newWorker = this.#registration.installing;
       if (!newWorker) return;
 
-      console.log(`[Spriteforge] New service worker installing...`);
+      console.log(`[AniForge] New service worker installing...`);
 
       const handleStateChange = () => {
         console.log(
-          `[Spriteforge] Service worker state changed to: ${newWorker.state}`,
+          `[AniForge] Service worker state changed to: ${newWorker.state}`,
         );
 
         if (
@@ -182,7 +182,7 @@ export class ServiceWorkerManager {
               return this.getVersion().then((currentVersion) => {
                 if (currentVersion === latestVersion) {
                   console.log(
-                    `[Spriteforge] New worker is same version, skipping notification`,
+                    `[AniForge] New worker is same version, skipping notification`,
                   );
                   return false;
                 }
@@ -192,7 +192,7 @@ export class ServiceWorkerManager {
             .then((shouldShow) => {
               if (shouldShow) {
                 console.log(
-                  `[Spriteforge] New service worker available. Consider refreshing the page.`,
+                  `[AniForge] New service worker available. Consider refreshing the page.`,
                 );
                 this.#dispatchUpdateEvent(newWorker);
               }
@@ -200,11 +200,11 @@ export class ServiceWorkerManager {
             })
             .catch((error) => {
               console.warn(
-                `[Spriteforge] Could not verify version, showing notification:`,
+                `[AniForge] Could not verify version, showing notification:`,
                 error,
               );
               console.log(
-                `[Spriteforge] New service worker available. Consider refreshing the page.`,
+                `[AniForge] New service worker available. Consider refreshing the page.`,
               );
               this.#dispatchUpdateEvent(newWorker);
               newWorker.removeEventListener("statechange", handleStateChange);
@@ -222,7 +222,7 @@ export class ServiceWorkerManager {
   #dispatchUpdateEvent(pendingWorker) {
     if (this.#isUpdating) {
       console.log(
-        `[Spriteforge] Update already in progress, skipping notification`,
+        `[AniForge] Update already in progress, skipping notification`,
       );
       return;
     }
@@ -238,26 +238,26 @@ export class ServiceWorkerManager {
 
   async checkForUpdates() {
     if (!this.#registration) {
-      console.warn(`[Spriteforge] Cannot check for updates: no registration`);
+      console.warn(`[AniForge] Cannot check for updates: no registration`);
       return;
     }
 
     try {
       console.log(
-        `[Spriteforge] Manually checking for service worker updates...`,
+        `[AniForge] Manually checking for service worker updates...`,
       );
       await this.#registration.update();
 
       setTimeout(() => {
         if (this.#registration.waiting && navigator.serviceWorker.controller) {
           console.log(
-            `[Spriteforge] Update check found waiting service worker`,
+            `[AniForge] Update check found waiting service worker`,
           );
           this.#dispatchUpdateEvent(this.#registration.waiting);
         }
       }, 100);
     } catch (error) {
-      console.error(`[Spriteforge] Failed to check for updates:`, error);
+      console.error(`[AniForge] Failed to check for updates:`, error);
     }
   }
 
@@ -296,7 +296,7 @@ export class ServiceWorkerManager {
       return cacheInfo?.version || null;
     } catch (error) {
       console.error(
-        `[Spriteforge] Failed to get service worker version:`,
+        `[AniForge] Failed to get service worker version:`,
         error,
       );
       return null;
@@ -340,7 +340,7 @@ export class ServiceWorkerManager {
       });
     } catch (error) {
       console.error(
-        `[Spriteforge] Failed to get latest service worker version:`,
+        `[AniForge] Failed to get latest service worker version:`,
         error,
       );
       return null;
@@ -358,12 +358,12 @@ export class ServiceWorkerManager {
     const targetWorker = worker || this.#registration?.waiting;
 
     if (!this.#registration || !targetWorker) {
-      console.warn(`[Spriteforge] No waiting service worker to skip waiting`);
+      console.warn(`[AniForge] No waiting service worker to skip waiting`);
       return;
     }
 
     this.#dispatchUpdateProgress("Sending activation signal...");
-    console.log(`[Spriteforge] Sending SKIP_WAITING message to service worker`);
+    console.log(`[AniForge] Sending SKIP_WAITING message to service worker`);
     targetWorker.postMessage({ type: "SKIP_WAITING" });
 
     return new Promise((resolve) => {
@@ -374,7 +374,7 @@ export class ServiceWorkerManager {
         if (navigator.serviceWorker.controller) {
           this.#dispatchUpdateProgress("New service worker activated...");
           console.log(
-            `[Spriteforge] New service worker is now controlling the page`,
+            `[AniForge] New service worker is now controlling the page`,
           );
           setTimeout(() => {
             if (
@@ -382,12 +382,12 @@ export class ServiceWorkerManager {
               this.#registration.waiting !== targetWorker
             ) {
               console.log(
-                `[Spriteforge] Old waiting worker has been terminated`,
+                `[AniForge] Old waiting worker has been terminated`,
               );
               this.#dispatchUpdateProgress("Preparing to reload...");
             } else {
               console.warn(
-                `[Spriteforge] Warning: Waiting worker still exists`,
+                `[AniForge] Warning: Waiting worker still exists`,
               );
               this.#dispatchUpdateProgress(
                 "Waiting for old worker to terminate...",
@@ -405,7 +405,7 @@ export class ServiceWorkerManager {
           setTimeout(() => {
             if (navigator.serviceWorker.controller) {
               console.log(
-                `[Spriteforge] New service worker is now controlling the page (delayed)`,
+                `[AniForge] New service worker is now controlling the page (delayed)`,
               );
               this.#dispatchUpdateProgress("Preparing to reload...");
               if (!resolved) {
@@ -414,7 +414,7 @@ export class ServiceWorkerManager {
               }
             } else {
               console.warn(
-                `[Spriteforge] No controller after skipWaiting, resolving anyway`,
+                `[AniForge] No controller after skipWaiting, resolving anyway`,
               );
               this.#dispatchUpdateProgress("Reloading...");
               if (!resolved) {
@@ -429,7 +429,7 @@ export class ServiceWorkerManager {
       const handleMessage = (event) => {
         if (event.data && event.data.type === "SW_ACTIVATED") {
           console.log(
-            `[Spriteforge] Service worker confirmed activation: ${event.data.version}`,
+            `[AniForge] Service worker confirmed activation: ${event.data.version}`,
           );
           this.#dispatchUpdateProgress(
             "Service worker activated. Reloading...",
@@ -461,7 +461,7 @@ export class ServiceWorkerManager {
       setTimeout(() => {
         if (!resolved) {
           console.log(
-            `[Spriteforge] Skip waiting timeout, proceeding with reload`,
+            `[AniForge] Skip waiting timeout, proceeding with reload`,
           );
           this.#dispatchUpdateProgress("Reloading page...");
           resolved = true;
@@ -478,47 +478,47 @@ export class ServiceWorkerManager {
 
   async clearAllCaches() {
     if (!("caches" in window)) {
-      console.warn(`[Spriteforge] Cache API not supported`);
+      console.warn(`[AniForge] Cache API not supported`);
       return;
     }
 
     try {
       const cacheNames = await caches.keys();
       const appCaches = cacheNames.filter((name) =>
-        name.startsWith("spriteforge-cache-"),
+        name.startsWith("aniforge-cache-"),
       );
 
       console.log(
-        `[Spriteforge] Clearing ${appCaches.length} cache(s):`,
+        `[AniForge] Clearing ${appCaches.length} cache(s):`,
         appCaches,
       );
 
       await Promise.all(appCaches.map((cacheName) => caches.delete(cacheName)));
 
-      console.log(`[Spriteforge] Successfully cleared all caches`);
+      console.log(`[AniForge] Successfully cleared all caches`);
 
       if (this.#registration) {
         await this.#registration.unregister();
-        console.log(`[Spriteforge] Service worker unregistered`);
+        console.log(`[AniForge] Service worker unregistered`);
         this.#isRegistered = false;
         this.#registration = null;
       }
 
       window.location.reload();
     } catch (error) {
-      console.error(`[Spriteforge] Failed to clear caches:`, error);
+      console.error(`[AniForge] Failed to clear caches:`, error);
       throw error;
     }
   }
 
   async handleUpdateNow(pendingWorker) {
     if (this.#isUpdating) {
-      console.log(`[Spriteforge] Update already in progress`);
+      console.log(`[AniForge] Update already in progress`);
       return;
     }
 
     this.#isUpdating = true;
-    console.log(`[Spriteforge] Handling update now request`);
+    console.log(`[AniForge] Handling update now request`);
 
     try {
       await this.skipWaiting(pendingWorker);
@@ -526,7 +526,7 @@ export class ServiceWorkerManager {
       if (!navigator.serviceWorker.controller) {
         this.#dispatchUpdateProgress("Verifying service worker activation...");
         console.warn(
-          `[Spriteforge] No service worker controller after skipWaiting, waiting a bit longer...`,
+          `[AniForge] No service worker controller after skipWaiting, waiting a bit longer...`,
         );
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
@@ -537,22 +537,22 @@ export class ServiceWorkerManager {
       ) {
         this.#dispatchUpdateProgress("Waiting for old worker to terminate...");
         console.warn(
-          `[Spriteforge] Warning: Waiting worker still exists after skipWaiting. Waiting longer...`,
+          `[AniForge] Warning: Waiting worker still exists after skipWaiting. Waiting longer...`,
         );
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         if (this.#registration.waiting === pendingWorker) {
           console.error(
-            `[Spriteforge] Error: Waiting worker still exists. This may cause multiple workers.`,
+            `[AniForge] Error: Waiting worker still exists. This may cause multiple workers.`,
           );
         }
       }
 
       this.#dispatchUpdateProgress("Reloading page...");
-      console.log(`[Spriteforge] Reloading page to use new service worker...`);
+      console.log(`[AniForge] Reloading page to use new service worker...`);
       window.location.reload();
     } catch (error) {
-      console.error(`[Spriteforge] Failed to update service worker:`, error);
+      console.error(`[AniForge] Failed to update service worker:`, error);
       this.#dispatchUpdateProgress("Update failed. Please try again.");
       this.#isUpdating = false;
       throw error;

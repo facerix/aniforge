@@ -1,6 +1,6 @@
 {
-  "name": "Spriteforge",
-  "short_name": "Spriteforge",
+  "name": "AniForge",
+  "short_name": "AniForge",
   "start_url": "/",
   "description": "Web app for working with animated images and sprite sheets",
   "theme_color": "#c9a227",
