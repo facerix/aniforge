@@ -1,4 +1,4 @@
-# Spriteforge
+# AniForge
 
 Progressive Web App (PWA) for working with animated images and sprite sheets. Built with vanilla JavaScript, Web Components, and Service Workers.
 

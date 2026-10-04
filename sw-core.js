@@ -7,7 +7,7 @@
  * Creates cache configuration from a version string and provides shared resource lists
  */
 const CacheConfig = {
-  create(version, prefix = "spriteforge-cache-") {
+  create(version, prefix = "aniforge-cache-") {
     return {
       version,
       name: `${prefix}v${version}`,
@@ -46,7 +46,7 @@ const CacheConfig = {
 
   getStaticAssets() {
     return [
-      "/favicon.png",
+      "/favicon.svg",
       "/favicon.ico",
       "/logo.png",
       "/apple-touch-icon.png",
